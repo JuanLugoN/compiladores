@@ -7,27 +7,16 @@
 
 
 ;---------------------- funciones auxiliares ----------------------;
+
 ;; Obtiene recursivamente el numero de horas que dependen si es un año bisiesto o no
 ;; fibo: numero de años, año actual -
-(define (edad-aux n a)
+(define (time-since-aux n a)
   (if (zero? n)
       0
         (if (zero? (modulo a 4))
-          (+ (* 366 24) (edad-aux (- n 1) (- a 1)))
-          (+ (* 365 24) (edad-aux (- n 1) (- a 1))))))
+          (+ (* 366 24) (time-since-aux (- n 1) (- a 1)))
+          (+ (* 365 24) (time-since-aux (- n 1) (- a 1))))))
 
-;; Muestra la cantidad de horas, minutos y segundos que han pasado durante n años
-;; Toma en cuenta si han pasado años binarios o no
-;; get-leaves; Tree - list(number)
-(define (edad n)
-  (let ([horas (edad-aux n 2021)])
-    (display (string-append  (~a n) " año(s) se traducen a: \n"))
-    (display (string-append  (~a horas) " horas. \n"))
-    (display (string-append  (~a (* horas 60)) " minutos. \n"))
-    (display (string-append  (~a (* (* horas 60) 60) " segundos.")))))
-
-
-;---------------------- funciones auxiliares ----------------------;
 ;; Regresa una lista con la suceción de fibonacci hasta el n-ésimo elemento de la sucesión en orden inverso.
 ;; fibo: number -> list(number)
 (define (fibo n)
@@ -73,9 +62,15 @@
   (= (sub1 (expt 2 (tree-height t))) (nodes-number t)))
 
 ;---------------------- Ejercicios ----------------------;
-;; Regresa las horas, minutos y segundos pasasados desde hace n años
-;; time-since: number -> number
-(define (time-since n) '())
+;; Muestra la cantidad de horas, minutos y segundos que han pasado durante n años
+;; Toma en cuenta si han pasado años binarios o no
+;; time-since; number
+(define (time-since n)
+  (let ([horas (time-since-aux n 2021)])
+    (display (string-append  (~a n) " año(s) se traducen a: \n"))
+    (display (string-append  (~a horas) " horas. \n"))
+    (display (string-append  (~a (* horas 60)) " minutos. \n"))
+    (display (string-append  (~a (* (* horas 60) 60) " segundos.")))))
 
 ;; Regresa una lista con la suceción de fibonacci hasta el n-ésimo elemento de la sucesión
 ;; fib: number -> list(number)
