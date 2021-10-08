@@ -48,3 +48,15 @@
 (define (prime-fac n)
   (get-leaves (div-tree n)))
 
+
+;; función que filtra arboles binários perfectos
+
+;;verifica si un arbol es completo
+(define (is-perfect t)
+  (type-case Tree t
+     [none () #t]
+     [T (l n r) (if (and
+                     (or (none? l) (none? r))
+                     (or (not (none? l)) (not (none? r))))
+                    #f
+                    (and (is-perfect l) (is-perfect r)))]))
