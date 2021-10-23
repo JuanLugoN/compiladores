@@ -9,6 +9,8 @@ Parser
 Integrantes de equipo/Autores:
 Nombre | No.cuenta| correo
 Juan García Lugo, 316161013, juanlugo@ciencias.unam.mx
+Nestor Semer Vazquez Cordero, 316041625, nestor2502@ciencias.unam.mx
+Angel Christian Pimentel Noriega, 316157995, cristianp@ciencias.unam.mx
 |#
 
 (require "Lexer.rkt" ;; Here goes your lexer file. In my case I called "Compiler.rkt".
