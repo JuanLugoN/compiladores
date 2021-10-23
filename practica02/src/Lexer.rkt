@@ -1,4 +1,15 @@
 #lang nanopass
+#|
+Compiladores 2022-1
+Profesora: Dra. Lourdes del Carmen Gonzalez Huesca
+Ayudante: Naomi Itzel Reyes Granados
+Laboratorio: Nora Hilda Hernández Luna
+
+Lexer
+Integrantes de equipo/Autores:
+Nombre | No.cuenta| correo
+Juan García Lugo, 316161013, juanlugo@ciencias.unam.mx
+|#
 
 ;; Bibliotecas chidas para lexear
 (require parser-tools/lex
@@ -6,35 +17,158 @@
          (prefix-in : parser-tools/lex-sre);Operadores
          (prefix-in re- parser-tools/lex-sre)
          parser-tools/yacc)
-
-(provide (all-defined-out));Exporta todos los identificadores que están definidos en el  nivel
+;Exporta todos los identificadores que están definidos en el  nivel
 ;de fase relevante dentro del módulo de exportación, y que tienen el mismo contexto léxico
+(provide (all-defined-out))
 
-(define-tokens a (NUM VAR))
-(define-empty-tokens b (LP RP + - EOF))
+;; Tokens con argumentos
+(define-tokens a (NUM  ;Numeros
+                  BOOL ;Booleanos
+                  VAR  ;Variables
+                  ))
+
+(define-empty-tokens b (LP RP LB RB LK RK ;Delimitadores.
+                        + - / * ;Operadores aritmeticos.
+                        AND OR ;Operadores booleanos.
+                        IF THEN ELSE ;Sentencia if then else
+                        FUN FUNF ARROW ;Sentencia de funciones
+                        APPT ;Multiples argumentos
+                        LET ASSIGN IN END ;Sentencia let 
+                        APP ;Aplicación de funciones
+                        INT BOOLE FUNC TYPEOF ; Tipos
+                        EOF ;Token final
+                        ))
 
 ; sre : S-regular expressions
-(define calc-lexer
+(define minHS-lexer
            (lexer
-             [(:+ (:or (char-range #\a #\z) (char-range #\A #\Z))) ; (a-z | A-Z)^+
+             [(:: #\] #\[)
               ; =>
-              (token-VAR (string->symbol lexeme))]
-
-             [(::  (:or #\- (epsilon)) (:: (:* (char-range #\0 #\9)) (:: (:or (:: #\. (char-range #\0 #\9)) (:: (char-range #\0 #\9)) #\.) (:* (char-range #\0 #\9)))))
-              ; =>
-              (token-NUM (string->number lexeme))]
-
-             [#\+
+              (token-APPT)]
+             ["+"
               ; =>
               (token-+)]
+             
+             ["and"
+              ; =>
+              (token-AND)]
 
-             [#\-
+             ["/"
+              ; =>
+              (token-/)]
+             
+             ["or"
+              ; =>
+              (token-OR)]
+             
+             ["-"
               ; =>
               (token--)]
 
+             ["*"
+              ; =>
+              (token-*)]
+             
+             [(:: #\# (:or #\t #\f))
+              ; =>
+              (token-BOOL (equal? lexeme "#t"))]
+             
+             ["=>"
+              ; =>
+              (token-ARROW)]
+             
+             [#\:
+              ; =>
+              (token-TYPEOF)]
+             
+             [#\=
+              ; =>
+              (token-ASSIGN)]
+             
+             ["app"
+              ; =>
+              (token-APP)]
+             
+             ["in"
+              ; =>
+              (token-IN)]
+             
+             ["end"
+              ; =>
+              (token-END)]
+             
+             ["let"
+              ; =>
+              (token-LET)]
+              
+             ["funF"
+              ; =>
+              (token-FUNF)]
+             
+             ["fun"
+              ; =>
+              (token-FUN)]
+             
+             ["if"
+              ; =>
+              (token-IF)]
+
+             ["then"
+              ; =>
+              (token-THEN)]
+
+             ["else"
+              ; =>
+              (token-ELSE)]
+             
+             [(:: (char-range #\a #\z)
+                  (:*(:or (char-range #\a #\z) (char-range #\0 #\9)))) ;[a-z]([a-z] + [0-9])^*
+              ; =>
+              (token-VAR (string->symbol lexeme))]
+
+             [(:+ (char-range #\0 #\9))
+              ; =>
+              (token-NUM (string->number lexeme))]
+
+             ["Int"
+              ; =>
+              (token-INT)]
+
+             ["Bool"
+              ; =>
+              (token-BOOLE)]
+
+             ["Func"
+              ; =>
+              (token-FUNC)]
+
+             [#\(
+              ; =>
+              (token-LP)]
+
+             [#\)
+              ; =>
+              (token-RP)]
+
+             [#\[
+              ; =>
+              (token-LB)]
+
+             [#\]
+              ; =>
+              (token-RB)]
+             
+             [#\{
+              ; =>
+              (token-LK)]
+
+             [#\}
+              ; =>
+              (token-RK)]
+             
              [whitespace
               ; =>
-              (calc-lexer input-port)]
+              (minHS-lexer input-port)]
 
              [(eof)
               (token-EOF)]))
@@ -42,4 +176,5 @@
 (define-struct arith-exp (op e1 e2) #:transparent)
 (define-struct num-exp (n) #:transparent)
 (define-struct var-exp (i) #:transparent)
+
 
