@@ -1,0 +1,1 @@
+("7.9" racket ("8b57121efb56d7ba624c4eaa98b8734fefe965a6" . "31f9d212620089b75ab62010a260a0c35538a99c") (collects #"errortrace" #"errortrace-key.rkt") (collects #"nanopass" #"base.rkt") (collects #"nanopass" #"lang" #"reader.rkt") (collects #"nanopass" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
